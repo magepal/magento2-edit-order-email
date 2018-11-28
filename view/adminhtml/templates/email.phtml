@@ -1,0 +1,15 @@
+<div id="mp_edit_order_email">
+    <p>Please enter the new email address</p>
+    <input type="text" name="email" value=""/>
+    <input type="hidden" value="orderid" name="order_id" />
+    <button name="save_new_email" onclick="mpEditOrderEmailPost()">Save</button>
+</div>
+
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "magePalEditOrderEmail": {"postUrl":"<?php echo $block->getAdminPostUrl() ?>"}
+        }
+    }
+</script>
