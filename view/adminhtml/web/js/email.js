@@ -7,28 +7,33 @@
  */
 
 define([
-    'Magento_Ui/js/modal/alert',
+    'Magento_Ui/js/modal/modal',
     'jquery',
-], function(alert, $){
+    'mage/validation'
+], function (alert, $) {
     'use strict';
 
+    var emailModal;
+
     var mpEditOrderEmailPopup = function () {
-        $('#mp_edit_order_email').alert({
-            title: 'Warning',
-            content: 'Warning content',
-            actions: {
-                always: function(){}
-            }
-        });
+        if (!emailModal) {
+            emailModal = $('#mp_edit_order_email').modal({
+                title: 'Edit Email',
+                content: 'Warning content',
+                buttons: []
+            });
+        }
+
+        emailModal.modal('openModal');
     };
 
-    var mpEditOrderEmailPost = function ( postUrl ) {
+    var mpSaveNewEmailFormPost = function ( postUrl ) {
 
         var postData = {form_key: FORM_KEY};
 
         //global var configForm
-        $('#mp_edit_order_email:input').serializeArray().map(function(field){
-            postData[name[2]] = field.value;
+        $('#mp_edit_order_email').find('input').serializeArray().map(function (field) {
+            postData[field.name] = field.value;
         });
 
 
@@ -38,7 +43,7 @@ define([
             dataType: 'html',
             data: postData,
             showLoader: true
-        }).done(function(response) {
+        }).done(function (response) {
             if (typeof response === 'object') {
                 if (response.error) {
                     alert({ title: 'Error', content: response.message });
@@ -66,8 +71,10 @@ define([
             mpEditOrderEmailPopup();
         });
 
-        $('#mpSaveNewEmail').click(function () {
-            mpEditOrderEmailPost(config.url);
+        $('#mpSaveNewEmailFormPost').click(function () {
+            if ($.validator.validateElement($("#mp_edit_order_email input[name='email']"))) {
+                mpSaveNewEmailFormPost(config.postUrl);
+            }
         });
     }
 

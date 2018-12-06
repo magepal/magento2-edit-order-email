@@ -3,8 +3,8 @@
 ## Magento2 - Edit order Email Address
 
 ### Todo 
-- Create admin controller to save new email address
-- Finish MagePal\EditOrderEmail\Block\Adminhtml\Email\Edit
+- Style Popup content
+- Add feature to also update customer email record
 
 
 ## Installation

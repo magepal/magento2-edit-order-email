@@ -9,9 +9,61 @@ namespace MagePal\EditOrderEmail\Block\Adminhtml\Email;
 
 class Edit extends \Magento\Backend\Block\Template
 {
+    /**
+     * Core registry
+     *
+     * @var \Magento\Framework\Registry
+     */
+    protected $coreRegistry = null;
 
-    //todo - get order id and pass to email.phtml hidden filed
+    /**
+     * @var \Magento\Framework\AuthorizationInterface
+     */
+    protected $authorization;
 
-    //todo - pass addmin controller url to js
+    public function __construct(
+        \Magento\Backend\Block\Template\Context $context,
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Framework\AuthorizationInterface $authorization,
+        array $data = []
+    ) {
+        parent::__construct($context, $data);
+        $this->coreRegistry = $coreRegistry;
+        $this->authorization = $authorization;
+    }
 
+    /**
+     * @return string
+     */
+    public function getAdminPostUrl()
+    {
+        return $this->getUrl('editorderemail/edit/index');
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderId()
+    {
+        return $this->getRequest()->getParam('order_id');
+    }
+
+    public function getEmailAddress()
+    {
+        /** @var \Magento\Sales\Api\Data\OrderInterface $order */
+        if ($order = $this->coreRegistry->registry('sales_order')) {
+            return $order->getCustomerEmail();
+        }
+
+        return '';
+    }
+
+    protected function _toHtml()
+    {
+        if (!$this->_authorization->isAllowed('MagePal_EditOrderEmail::magepal_editorderemail')) {
+            return '';
+        }
+
+        return parent::_toHtml();
+    }
 }
