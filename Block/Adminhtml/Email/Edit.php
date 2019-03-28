@@ -7,29 +7,48 @@
 
 namespace MagePal\EditOrderEmail\Block\Adminhtml\Email;
 
-class Edit extends \Magento\Backend\Block\Template
+use Magento\Backend\Block\Template;
+use Magento\Backend\Block\Template\Context;
+use Magento\Framework\AuthorizationInterface;
+use Magento\Framework\Registry;
+use Magento\Sales\Api\Data\OrderInterface;
+use MagePal\EditOrderEmail\Helper\Data;
+
+class Edit extends Template
 {
     /**
      * Core registry
      *
-     * @var \Magento\Framework\Registry
+     * @var Registry
      */
     protected $coreRegistry = null;
 
     /**
-     * @var \Magento\Framework\AuthorizationInterface
+     * MagePal Helper
+     *
+     * @var Data
+     */
+    protected $_helper;
+
+    /**
+     * @var Context $context
+     * @var Registry $coreRegistry
+     * @var AuthorizationInterface
+     * @var Data $helper
      */
     protected $authorization;
 
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\AuthorizationInterface $authorization,
+        Context $context,
+        Registry $coreRegistry,
+        AuthorizationInterface $authorization,
+        Data $helper,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->coreRegistry = $coreRegistry;
         $this->authorization = $authorization;
+        $this->_helper = $helper;
     }
 
     /**
@@ -48,9 +67,17 @@ class Edit extends \Magento\Backend\Block\Template
         return $this->getRequest()->getParam('order_id');
     }
 
+    /**
+     * @return int
+     */
+    public function getAutocheckEmail()
+    {
+        return $this->_helper->getConfigValue('magepal_editorderemail/general/update_customer_email');
+    }
+
     public function getEmailAddress()
     {
-        /** @var \Magento\Sales\Api\Data\OrderInterface $order */
+        /** @var OrderInterface $order */
         if ($order = $this->coreRegistry->registry('sales_order')) {
             return $order->getCustomerEmail();
         }

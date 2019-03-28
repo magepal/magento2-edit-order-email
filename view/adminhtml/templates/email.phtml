@@ -5,14 +5,18 @@
  * http://www.magepal.com | support@magepal.com
  */
 
-/** @var $block \MagePal\EditOrderEmail\Block\Adminhtml\Email\Edit */
+/** @var $block MagePal\EditOrderEmail\Block\Adminhtml\Email\Edit */
+
+$checked = $block->getAutocheckEmail() == 1 ? 'checked' : '';
 ?>
 
-<div id="mp_edit_order_email" style="display: none">
+<div id="mp_edit_order_email">
     <p>Please enter the new email address</p>
     <input type="email" data-validate='{"required":true, "validate-email":true}' name="email" />
-    <input type="hidden" value="order_id" name="<?php echo $block->getOrderId() ?>" />
-    <input type="hidden" value="old_email" name="<?php echo $block->getEmailAddress() ?>" />
+    <input type="hidden" name="order_id" value="<?php echo $block->getOrderId() ?>" />
+    <input type="hidden" name="old_email" value="<?php echo $block->getEmailAddress() ?>" />
+    <input type="checkbox" name="update_customer_email" value="<?= $block->getAutocheckEmail() ?>" <?= $checked ?>> Update Customer Record<br>
+    <span class="errormsg"></span>
     <button id="mpSaveNewEmailFormPost">Save</button>
 </div>
 

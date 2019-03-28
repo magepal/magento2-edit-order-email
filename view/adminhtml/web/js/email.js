@@ -10,7 +10,7 @@ define([
     'Magento_Ui/js/modal/modal',
     'jquery',
     'mage/validation'
-], function (alert, $) {
+], function (alert, $, validator) {
     'use strict';
 
     var emailModal;
@@ -36,32 +36,39 @@ define([
             postData[field.name] = field.value;
         });
 
-
         $.ajax({
             url: postUrl,
             type: 'post',
-            dataType: 'html',
+            dataType: 'json',
             data: postData,
-            showLoader: true
-        }).done(function (response) {
-            if (typeof response === 'object') {
-                if (response.error) {
-                    alert({ title: 'Error', content: response.message });
-                } else if (response.ajaxExpired) {
-                    window.location.href = response.ajaxRedirect;
+            showLoader: true,
+            success: function (res) {
+                if (res.error === false) {
+                    $('#mp_edit_order_email').modal('hide');
+                    return true;
+                } else {
+                    $(".errormsg").html(res.message);
+                    return false;
                 }
-            } else {
-                alert({
-                    title:'',
-                    content:response,
-                    buttons: []
-                });
             }
+            }).done(function (response) {
+                if (typeof response === 'object') {
+                    if (response.error) {
+                        alert({ title: 'Error', content: response.message });
+                    } else if (response.ajaxExpired) {
+                        window.location.href = response.ajaxRedirect;
+                    }
+                } else {
+                    alert({
+                        title:'',
+                        content:response,
+                        buttons: []
+                    });
+                }
+                return true;
 
-        });
+            });
     };
-
-
 
     return function (config) {
         var html = '<button id="mpEditOrderEmailPopup">edit</button>';

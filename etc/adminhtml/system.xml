@@ -34,6 +34,12 @@
                     <frontend_model>MagePal\EditOrderEmail\Block\Adminhtml\System\Config\Form\Composer\Version</frontend_model>
                 </field>
             </group>
+            <group id="general" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="0" translate="label">
+                <field id="update_customer_email" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Automatically update customer record email address</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
         </section>
     </system>
 </config>

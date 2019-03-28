@@ -7,45 +7,61 @@
 
 namespace MagePal\EditOrderEmail\Controller\Adminhtml\Edit;
 
+use Exception;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Customer\Api\AccountManagementInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\Controller\Result\Json;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderCustomerManagementInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Zend_Validate;
 
 class Index extends Action
 {
     /**
-     * @var \Magento\Sales\Api\OrderRepositoryInterface
+     * @var OrderRepositoryInterface
      */
     protected $orderRepository;
 
     /**
-     * @var \Magento\Customer\Api\AccountManagementInterface
+     * @var AccountManagementInterface
      */
     protected $accountManagement;
 
     /**
-     * @var \Magento\Sales\Api\OrderCustomerManagementInterface
+     * @var OrderCustomerManagementInterface
      */
     protected $orderCustomerService;
 
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var CustomerRepositoryInterface $customerRepository
+     */
+    protected $customerRepository;
+
+    /**
+     * @var JsonFactory
      */
     protected $resultJsonFactory;
 
     /**
      * Index constructor.
      * @param Context $context
-     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
-     * @param \Magento\Customer\Api\AccountManagementInterface $accountManagement
-     * @param \Magento\Sales\Api\OrderCustomerManagementInterface $orderCustomerService
-     * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+     * @param OrderRepositoryInterface $orderRepository
+     * @param AccountManagementInterface $accountManagement
+     * @param OrderCustomerManagementInterface $orderCustomerService
+     * @param JsonFactory $resultJsonFactory
+     * @param CustomerRepositoryInterface $customerRepository
      */
     public function __construct(
         Context $context,
-        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
-        \Magento\Customer\Api\AccountManagementInterface $accountManagement,
-        \Magento\Sales\Api\OrderCustomerManagementInterface $orderCustomerService,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
+        OrderRepositoryInterface $orderRepository,
+        AccountManagementInterface $accountManagement,
+        OrderCustomerManagementInterface $orderCustomerService,
+        JsonFactory $resultJsonFactory,
+        CustomerRepositoryInterface $customerRepository
     ) {
         parent::__construct($context);
 
@@ -53,66 +69,75 @@ class Index extends Action
         $this->orderCustomerService = $orderCustomerService;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->accountManagement = $accountManagement;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
      * Index action
-     * @return \Magento\Framework\Controller\Result\Json
-     * @throws \Exception
+     * @return Json
+     * @throws Exception
      */
     public function execute()
     {
         $request = $this->getRequest();
-        $orderId = $request->getPost('order_id', null);
-        $emailAddress = $request->getPost('email', null);
-        $oldEmailAddress = $request->getPost('old_email', null);
+        $orderId = $request->getPost('order_id');
+        $emailAddress = $request->getPost('email');
+        $oldEmailAddress = $request->getPost('old_email');
+        $customerautocheck = $request->getPost('update_customer_email');
         $resultJson = $this->resultJsonFactory->create();
 
-        if ($orderId) {
-            /** @var  $order \Magento\Sales\Api\Data\OrderInterface */
-            $order = $this->orderRepository->get($orderId);
-
-            if ($order->getEntityId()
-                && \Zend_Validate::is($emailAddress, 'EmailAddress')
-            ) {
-                try {
-                    $order = $this->orderRepository->get($orderId);
-                    $order->setCustomerEmail($emailAddress);
-                    $this->orderRepository->save($order);
-
-                    //if update customer email
-                    if ($this->accountManagement->isEmailAvailable($emailAddress)) {
-                    }
-
-                    $this->messageManager->addSuccessMessage(__('Order was successfully converted.'));
-
-                    return $resultJson->setData(
-                        [
-                            'error' => false,
-                            'message' => __('Email address successfully changed.')
-                        ]
-                    );
-                } catch (\Exception $e) {
-                    return $resultJson->setData(
-                        [
-                            'error' => true,
-                            'message' => $e->getMessage()
-                        ]
-                    );
-                }
-            } else {
-                return $resultJson->setData(
-                    [
-                        'error' => true,
-                        'message' => __('Invalid Email address.')
-                    ]
-                );
-            }
-        } else {
+        if (!isset($orderId)) {
             return $resultJson->setData(
                 [
                     'error' => true,
                     'message' => __('Invalid order id.')
+                ]
+            );
+        }
+
+        if (!Zend_Validate::is($emailAddress, 'EmailAddress')) {
+            return $resultJson->setData(
+                [
+                    'error' => true,
+                    'message' => __('Invalid Email address.')
+                ]
+            );
+        }
+
+        try {
+            /** @var  $order OrderInterface */
+            $order = $this->orderRepository->get($orderId);
+            if ($order->getEntityId()) {
+                //$order = $this->orderRepository->get($orderId);
+                $order->setCustomerEmail($emailAddress);
+                $this->orderRepository->save($order);
+
+                //if update customer email
+                if ($this->accountManagement->isEmailAvailable($oldEmailAddress)) {
+                    if ($customerautocheck == 1) {
+                        $customer = $this->customerRepository->get($oldEmailAddress);
+                        if ($customer->getId()) {
+                            $customer->setId($customer->getId());
+                            $customer->setEmail($emailAddress);
+                        }
+                        $this->customerRepository->save($customer);
+                    }
+                }
+
+                $this->messageManager->addSuccessMessage(__('Order was successfully converted.'));
+
+                return $resultJson->setData(
+                    [
+                        'error' => false,
+                        'message' => __('Email address successfully changed.')
+                    ]
+                );
+            }
+        } catch (Exception $e) {
+            return $resultJson->setData(
+                [
+                    'error' => true,
+                    'message' => $e->getMessage()
                 ]
             );
         }
