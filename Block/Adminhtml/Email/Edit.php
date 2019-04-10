@@ -14,6 +14,10 @@ use Magento\Framework\Registry;
 use Magento\Sales\Api\Data\OrderInterface;
 use MagePal\EditOrderEmail\Helper\Data;
 
+/**
+ * Class Edit
+ * @package MagePal\EditOrderEmail\Block\Adminhtml\Email
+ */
 class Edit extends Template
 {
     /**
@@ -38,6 +42,14 @@ class Edit extends Template
      */
     protected $authorization;
 
+    /**
+     * Edit constructor.
+     * @param Context $context
+     * @param Registry $coreRegistry
+     * @param AuthorizationInterface $authorization
+     * @param Data $helper
+     * @param array $data
+     */
     public function __construct(
         Context $context,
         Registry $coreRegistry,
@@ -67,6 +79,11 @@ class Edit extends Template
         return $this->getRequest()->getParam('order_id');
     }
 
+    public function getOrder()
+    {
+        return $this->coreRegistry->registry('sales_order');
+    }
+
     /**
      * @return int
      */
@@ -75,16 +92,35 @@ class Edit extends Template
         return $this->_helper->getConfigValue('magepal_editorderemail/general/update_customer_email');
     }
 
+    /**
+     * @return string
+     */
     public function getEmailAddress()
     {
         /** @var OrderInterface $order */
-        if ($order = $this->coreRegistry->registry('sales_order')) {
+        if ($order = $this->getOrder()) {
             return $order->getCustomerEmail();
         }
 
         return '';
     }
 
+    /**
+     * @return bool
+     */
+    public function hasCustomerId()
+    {
+        /** @var OrderInterface $order */
+        if ($order = $this->getOrder()) {
+            return $order->getCustomerId() ? true : false;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
     protected function _toHtml()
     {
         if (!$this->_authorization->isAllowed('MagePal_EditOrderEmail::magepal_editorderemail')) {

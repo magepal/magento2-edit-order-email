@@ -1,6 +1,4 @@
 /**
- * Google Tag Manager
- *
  * Copyright © MagePal LLC. All rights reserved.
  * See COPYING.txt for license details.
  * http://www.magepal.com | support@magepal.com
@@ -8,9 +6,8 @@
 
 define([
     'Magento_Ui/js/modal/modal',
-    'jquery',
-    'mage/validation'
-], function (alert, $, validator) {
+    'jquery'
+], function (alert, $) {
     'use strict';
 
     var emailModal;
@@ -28,61 +25,67 @@ define([
     };
 
     var mpSaveNewEmailFormPost = function ( postUrl ) {
+        var form = $('form.change-order-email');
 
-        var postData = {form_key: FORM_KEY};
+        form.submit(function (e) {
+            if (form.validation('isValid')) {
+                var url = form.attr('action');
+                var data = $(this).serialize();
+                data['form_key'] =  FORM_KEY;
 
-        //global var configForm
-        $('#mp_edit_order_email').find('input').serializeArray().map(function (field) {
-            postData[field.name] = field.value;
+
+                try {
+                    $.ajax({
+                        url: url,
+                        dataType: 'json',
+                        type: 'POST',
+                        data: data,
+                        success: function (data) {
+                            if (data.error === false) {
+                                emailModal.modal('closeModal');
+                                return true;
+                            } else {
+                                $(".errormsg").html(data.message);
+                                return false;
+                            }
+                        }
+                    }).done(function (response) {
+                        if (typeof response === 'object') {
+                            if (response.error) {
+                                alert({ title: 'Error', content: response.message });
+                            } else if (response.ajaxExpired) {
+                                window.location.href = response.ajaxRedirect;
+                            }
+                        } else {
+                            alert({
+                                title:'',
+                                content:response,
+                                buttons: []
+                            });
+                        }
+                        return true;
+
+                    });
+                } catch (e) {
+                    loadingMessage.html(e.message);
+                }
+            } else {
+                $("div.menu-wrapper._fixed").removeAttr("style");
+            }
+            return false;
         });
 
-        $.ajax({
-            url: postUrl,
-            type: 'post',
-            dataType: 'json',
-            data: postData,
-            showLoader: true,
-            success: function (res) {
-                if (res.error === false) {
-                    $('#mp_edit_order_email').modal('hide');
-                    return true;
-                } else {
-                    $(".errormsg").html(res.message);
-                    return false;
-                }
-            }
-            }).done(function (response) {
-                if (typeof response === 'object') {
-                    if (response.error) {
-                        alert({ title: 'Error', content: response.message });
-                    } else if (response.ajaxExpired) {
-                        window.location.href = response.ajaxRedirect;
-                    }
-                } else {
-                    alert({
-                        title:'',
-                        content:response,
-                        buttons: []
-                    });
-                }
-                return true;
-
-            });
     };
 
     return function (config) {
-        var html = '<button id="mpEditOrderEmailPopup">edit</button>';
+        var html = '<button id="mpEditOrderEmailPopup">' + config.buttonLabel + '</button>';
         $('table.order-account-information-table tr a[href^="mailto:"]').parent().append(html);
 
         $('#mpEditOrderEmailPopup').click(function () {
             mpEditOrderEmailPopup();
         });
 
-        $('#mpSaveNewEmailFormPost').click(function () {
-            if ($.validator.validateElement($("#mp_edit_order_email input[name='email']"))) {
-                mpSaveNewEmailFormPost(config.postUrl);
-            }
-        });
+        mpSaveNewEmailFormPost(config.postUrl);
     }
 
 });

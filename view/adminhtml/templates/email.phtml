@@ -6,25 +6,50 @@
  */
 
 /** @var $block MagePal\EditOrderEmail\Block\Adminhtml\Email\Edit */
-
 $checked = $block->getAutocheckEmail() == 1 ? 'checked' : '';
 ?>
+<div id="mp_edit_order_email" style="display: none;">
+    <form class="form change-order-email"
+          novalidate
+          action="<?= $block->escapeUrl($block->getAdminPostUrl()) ?>"
+          method="post"
+          data-mage-init='{"validation": {"errorClass": "mage-error"}}'>
+        <div class="wrapper">
+            <p><?php echo __('Please enter the new email address') ?></p>
+            <input type="hidden" name="order_id" value="<?php echo $block->getOrderId() ?>" />
+            <input type="hidden" name="old_email" value="<?php echo $block->getEmailAddress() ?>" />
+            <input name="email" type="email" class="admin__control-text  data-grid-search-control"
+                   placeholder="<?= $block->escapeHtml(__('Enter email address')) ?>"
+                   data-validate="{required:true, 'validate-email':true}"
+                   value="" />
 
-<div id="mp_edit_order_email">
-    <p>Please enter the new email address</p>
-    <input type="email" data-validate='{"required":true, "validate-email":true}' name="email" />
-    <input type="hidden" name="order_id" value="<?php echo $block->getOrderId() ?>" />
-    <input type="hidden" name="old_email" value="<?php echo $block->getEmailAddress() ?>" />
-    <input type="checkbox" name="update_customer_email" value="<?= $block->getAutocheckEmail() ?>" <?= $checked ?>> Update Customer Record<br>
-    <span class="errormsg"></span>
-    <button id="mpSaveNewEmailFormPost">Save</button>
+            <?php if ($block->hasCustomerId()) : ?>
+            <div class="checkbox">
+                <input type="checkbox" class="checkbox" id="update_customer_email" name="update_customer_email" value="<?= $block->getAutocheckEmail() ?>" <?= $checked ?>>
+                <label for="update_customer_email"><?php echo __('Update Customer Record') ?></label>
+            </div>
+            <?php endif; ?>
+
+            <div>
+                <span class="mage-error"></span>
+            </div>
+
+            <div class="actions">
+                <button class="action change-email primary" title="<?= $block->escapeHtmlAttr(__('Change Email')) ?>" type="submit">
+                    <span><?= $block->escapeHtml(__('Change Email')) ?></span>
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
-
 
 <script type="text/x-magento-init">
     {
         "*": {
-            "magePalEditOrderEmail": {"postUrl":"<?php echo $block->getAdminPostUrl() ?>"}
+            "magePalEditOrderEmail": {
+                "postUrl":"<?php echo $block->getAdminPostUrl() ?>",
+                "buttonLabel":"<?php echo __('edit') ?>"
+            }
         }
     }
 </script>

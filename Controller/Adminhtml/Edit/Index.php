@@ -107,32 +107,31 @@ class Index extends Action
         try {
             /** @var  $order OrderInterface */
             $order = $this->orderRepository->get($orderId);
-            if ($order->getEntityId()) {
-                //$order = $this->orderRepository->get($orderId);
+            if ($order->getEntityId() && $order->getCustomerEmail() == $oldEmailAddress) {
                 $order->setCustomerEmail($emailAddress);
                 $this->orderRepository->save($order);
-
-                //if update customer email
-                if ($this->accountManagement->isEmailAvailable($oldEmailAddress)) {
-                    if ($customerautocheck == 1) {
-                        $customer = $this->customerRepository->get($oldEmailAddress);
-                        if ($customer->getId()) {
-                            $customer->setId($customer->getId());
-                            $customer->setEmail($emailAddress);
-                        }
-                        $this->customerRepository->save($customer);
-                    }
-                }
-
-                $this->messageManager->addSuccessMessage(__('Order was successfully converted.'));
-
-                return $resultJson->setData(
-                    [
-                        'error' => false,
-                        'message' => __('Email address successfully changed.')
-                    ]
-                );
             }
+
+            //if update customer email
+            if ($customerautocheck == 1
+                && $order->getCustomerId()
+                && $this->accountManagement->isEmailAvailable($emailAddress)
+            ) {
+                $customer = $this->customerRepository->getById($order->getCustomerId());
+                if ($customer->getId()) {
+                    $customer->setEmail($emailAddress);
+                    $this->customerRepository->save($customer);
+                }
+            }
+
+            $this->messageManager->addSuccessMessage(__('Order was successfully converted.'));
+
+            return $resultJson->setData(
+                [
+                    'error' => false,
+                    'message' => __('Email address successfully changed.')
+                ]
+            );
         } catch (Exception $e) {
             return $resultJson->setData(
                 [

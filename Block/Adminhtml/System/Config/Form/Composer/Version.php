@@ -18,6 +18,10 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Phrase;
 
+/**
+ * Class Version
+ * @package MagePal\EditOrderEmail\Block\Adminhtml\System\Config\Form\Composer
+ */
 class Version extends Field
 {
 
@@ -37,9 +41,11 @@ class Version extends Field
     protected $readFactory;
 
     /**
+     * @param Context $context
      * @param DeploymentConfig $deploymentConfig
      * @param ComponentRegistrarInterface $componentRegistrar
      * @param ReadFactory $readFactory
+     * @param array $data
      */
     public function __construct(
         Context $context,

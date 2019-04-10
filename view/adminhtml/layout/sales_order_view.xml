@@ -6,6 +6,9 @@
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="MagePal_EditOrderEmail::css/email-popup.css" media="all" />
+    </head>
     <body>
         <referenceContainer name="content">
             <block class="MagePal\EditOrderEmail\Block\Adminhtml\Email\Edit" name="magepal_email_edit"
