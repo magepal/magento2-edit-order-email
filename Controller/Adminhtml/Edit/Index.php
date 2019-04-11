@@ -10,6 +10,7 @@ namespace MagePal\EditOrderEmail\Controller\Adminhtml\Edit;
 use Exception;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\Auth\Session;
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Controller\Result\Json;
@@ -49,6 +50,10 @@ class Index extends Action
      * @var EmailAddress
      */
     private $emailAddressValidator;
+    /**
+     * @var Session
+     */
+    private $authSession;
 
     /**
      * Index constructor.
@@ -59,6 +64,7 @@ class Index extends Action
      * @param JsonFactory $resultJsonFactory
      * @param CustomerRepositoryInterface $customerRepository
      * @param EmailAddress $emailAddressValidator
+     * @param Session $authSession
      */
     public function __construct(
         Context $context,
@@ -67,7 +73,8 @@ class Index extends Action
         OrderCustomerManagementInterface $orderCustomerService,
         JsonFactory $resultJsonFactory,
         CustomerRepositoryInterface $customerRepository,
-        EmailAddress $emailAddressValidator
+        EmailAddress $emailAddressValidator,
+        Session $authSession
     ) {
         parent::__construct($context);
 
@@ -77,6 +84,7 @@ class Index extends Action
         $this->accountManagement = $accountManagement;
         $this->customerRepository = $customerRepository;
         $this->emailAddressValidator = $emailAddressValidator;
+        $this->authSession = $authSession;
     }
 
     /**
@@ -119,6 +127,14 @@ class Index extends Action
             /** @var  $order OrderInterface */
             $order = $this->orderRepository->get($orderId);
             if ($order->getEntityId() && $order->getCustomerEmail() == $oldEmailAddress) {
+                $comment = sprintf(
+                    __("Order email address change from %s to %s by %s"),
+                    $oldEmailAddress,
+                    $emailAddress,
+                    $this->authSession->getUser()->getUserName()
+                );
+
+                $order->addStatusHistoryComment($comment);
                 $order->setCustomerEmail($emailAddress);
                 $this->orderRepository->save($order);
             }
