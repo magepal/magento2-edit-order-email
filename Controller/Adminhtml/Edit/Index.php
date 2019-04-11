@@ -14,10 +14,10 @@ use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Validator\EmailAddress;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderCustomerManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Zend_Validate;
 
 class Index extends Action
 {
@@ -45,6 +45,10 @@ class Index extends Action
      * @var JsonFactory
      */
     protected $resultJsonFactory;
+    /**
+     * @var EmailAddress
+     */
+    private $emailAddressValidator;
 
     /**
      * Index constructor.
@@ -54,6 +58,7 @@ class Index extends Action
      * @param OrderCustomerManagementInterface $orderCustomerService
      * @param JsonFactory $resultJsonFactory
      * @param CustomerRepositoryInterface $customerRepository
+     * @param EmailAddress $emailAddressValidator
      */
     public function __construct(
         Context $context,
@@ -61,7 +66,8 @@ class Index extends Action
         AccountManagementInterface $accountManagement,
         OrderCustomerManagementInterface $orderCustomerService,
         JsonFactory $resultJsonFactory,
-        CustomerRepositoryInterface $customerRepository
+        CustomerRepositoryInterface $customerRepository,
+        EmailAddress $emailAddressValidator
     ) {
         parent::__construct($context);
 
@@ -70,6 +76,7 @@ class Index extends Action
         $this->resultJsonFactory = $resultJsonFactory;
         $this->accountManagement = $accountManagement;
         $this->customerRepository = $customerRepository;
+        $this->emailAddressValidator = $emailAddressValidator;
     }
 
     /**
@@ -81,25 +88,29 @@ class Index extends Action
     {
         $request = $this->getRequest();
         $orderId = $request->getPost('order_id');
-        $emailAddress = $request->getPost('email');
+        $emailAddress = trim($request->getPost('email'));
         $oldEmailAddress = $request->getPost('old_email');
-        $customerautocheck = $request->getPost('update_customer_email');
+        $updateCustomerEmailRecord = $request->getPost('update_customer_email');
         $resultJson = $this->resultJsonFactory->create();
 
         if (!isset($orderId)) {
             return $resultJson->setData(
                 [
                     'error' => true,
-                    'message' => __('Invalid order id.')
+                    'message' => __('Invalid order id.'),
+                    'email' => '',
+                    'ajaxExpired' => false
                 ]
             );
         }
 
-        if (!Zend_Validate::is($emailAddress, 'EmailAddress')) {
+        if (!$this->emailAddressValidator->isValid($emailAddress)) {
             return $resultJson->setData(
                 [
                     'error' => true,
-                    'message' => __('Invalid Email address.')
+                    'message' => __('Invalid Email address.'),
+                    'email' => '',
+                    'ajaxExpired' => false
                 ]
             );
         }
@@ -113,7 +124,7 @@ class Index extends Action
             }
 
             //if update customer email
-            if ($customerautocheck == 1
+            if ($updateCustomerEmailRecord == 1
                 && $order->getCustomerId()
                 && $this->accountManagement->isEmailAvailable($emailAddress)
             ) {
@@ -124,19 +135,21 @@ class Index extends Action
                 }
             }
 
-            $this->messageManager->addSuccessMessage(__('Order was successfully converted.'));
-
             return $resultJson->setData(
                 [
                     'error' => false,
-                    'message' => __('Email address successfully changed.')
+                    'message' => __('Email address successfully changed.'),
+                    'email' => $emailAddress,
+                    'ajaxExpired' => false
                 ]
             );
         } catch (Exception $e) {
             return $resultJson->setData(
                 [
                     'error' => true,
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
+                    'email' => '',
+                    'ajaxExpired' => false
                 ]
             );
         }

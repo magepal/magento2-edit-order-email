@@ -6,11 +6,14 @@
 
 define([
     'Magento_Ui/js/modal/modal',
-    'jquery'
-], function (alert, $) {
+    'jquery',
+    'mage/translate'
+], function (alert, $, $t) {
     'use strict';
 
     var emailModal;
+    var $form = $('form.change-order-email');
+    var $emailHref = $('table.order-account-information-table tr a[href^="mailto:"]');
 
     var mpEditOrderEmailPopup = function () {
         if (!emailModal) {
@@ -25,67 +28,82 @@ define([
     };
 
     var mpSaveNewEmailFormPost = function ( postUrl ) {
-        var form = $('form.change-order-email');
-
-        form.submit(function (e) {
-            if (form.validation('isValid')) {
-                var url = form.attr('action');
-                var data = $(this).serialize();
-                data['form_key'] =  FORM_KEY;
 
 
-                try {
-                    $.ajax({
-                        url: url,
-                        dataType: 'json',
-                        type: 'POST',
-                        data: data,
-                        success: function (data) {
+        if ($form.valid()) {
+            var url = $form.attr('action');
+            var postData = $form.serializeArray();
+            postData.push({form_key : FORM_KEY});
+
+            try {
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    type: 'POST',
+                    showLoader: true,
+                    data: $.param(postData),
+                    complete: function (data) {
+                        if (typeof data === 'object') {
+                            data = data.responseJSON;
                             if (data.error === false) {
-                                emailModal.modal('closeModal');
-                                return true;
-                            } else {
-                                $(".errormsg").html(data.message);
-                                return false;
-                            }
-                        }
-                    }).done(function (response) {
-                        if (typeof response === 'object') {
-                            if (response.error) {
-                                alert({ title: 'Error', content: response.message });
-                            } else if (response.ajaxExpired) {
-                                window.location.href = response.ajaxRedirect;
-                            }
-                        } else {
-                            alert({
-                                title:'',
-                                content:response,
-                                buttons: []
-                            });
-                        }
-                        return true;
+                                setTimeout(function () {
+                                    emailModal.modal('closeModal');
+                                },10000);
 
-                    });
-                } catch (e) {
-                    loadingMessage.html(e.message);
-                }
-            } else {
-                $("div.menu-wrapper._fixed").removeAttr("style");
+                                if (data.email) {
+                                    $emailHref.attr("href", "mailto:" + data.email).text(data.email)
+                                }
+
+                            }
+
+                            if (data.ajaxExpired) {
+                                window.location.href = data.ajaxRedirect;
+                            }
+
+                            $(".mage-error").html(data.message);
+                        } else {
+                            $(".mage-error").html($t('Unknown Error'));
+                        }
+
+                        return false;
+                    }
+                });
+
+            } catch (e) {
+                $(".mage-error").html(e.message);
             }
-            return false;
-        });
+        } else {
+            $("div.menu-wrapper._fixed").removeAttr("style");
+        }
+
+        return false;
 
     };
 
     return function (config) {
         var html = '<button id="mpEditOrderEmailPopup">' + config.buttonLabel + '</button>';
-        $('table.order-account-information-table tr a[href^="mailto:"]').parent().append(html);
+        $emailHref.parent().append(html);
 
         $('#mpEditOrderEmailPopup').click(function () {
             mpEditOrderEmailPopup();
         });
 
-        mpSaveNewEmailFormPost(config.postUrl);
+        $('form.change-order-email button').on('click', function () {
+            mpSaveNewEmailFormPost(config.postUrl);
+        });
+
+        $form.on("keypress", function (event) {
+            if (event.keyCode === 13) {
+                mpSaveNewEmailFormPost(config.postUrl);
+            }
+
+            return event.keyCode != 13;
+        });
+
+        $form.submit(function (event) {
+            return false;
+        });
+
     }
 
 });

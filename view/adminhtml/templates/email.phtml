@@ -8,12 +8,12 @@
 /** @var $block MagePal\EditOrderEmail\Block\Adminhtml\Email\Edit */
 $checked = $block->getAutocheckEmail() == 1 ? 'checked' : '';
 ?>
-<div id="mp_edit_order_email" style="display: none;">
+<div id="mp_edit_order_email" style="display: none">
     <form class="form change-order-email"
           novalidate
           action="<?= $block->escapeUrl($block->getAdminPostUrl()) ?>"
           method="post"
-          data-mage-init='{"validation": {"errorClass": "mage-error"}}'>
+          data-mage-init='{"validation": {"errorClass": "mage-error"}}' >
         <div class="wrapper">
             <p><?php echo __('Please enter the new email address') ?></p>
             <input type="hidden" name="order_id" value="<?php echo $block->getOrderId() ?>" />
@@ -30,12 +30,12 @@ $checked = $block->getAutocheckEmail() == 1 ? 'checked' : '';
             </div>
             <?php endif; ?>
 
-            <div>
+            <div class="message">
                 <span class="mage-error"></span>
             </div>
 
             <div class="actions">
-                <button class="action change-email primary" title="<?= $block->escapeHtmlAttr(__('Change Email')) ?>" type="submit">
+                <button class="action change-email primary" title="<?= $block->escapeHtmlAttr(__('Change Email')) ?>" type="button">
                     <span><?= $block->escapeHtml(__('Change Email')) ?></span>
                 </button>
             </div>
