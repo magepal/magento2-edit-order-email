@@ -9,15 +9,20 @@ Entering the wrong email address during purchase is a very common mistake, espec
 
 ## Installation
 
-#### Step 
+#### Step 1
 
-##### Manually
+##### Using Composer
+```
+composer require magepal/magento2-edit-order-email
+```
+ 
+##### Manually (not recommended)
  * Download the extension
  * Unzip the file
  * Create a folder {Magento 2 root}/app/code/MagePal/EnhancedEcommerce
  * Copy the content from the unzip folder
 
-#### Step 4 - Enable Module (from {Magento root} folder)
+#### Step 2 - Enable Module (from {Magento root} folder)
  * php -f bin/magento module:enable --clear-static-content MagePal_EditOrderEmail
  * php -f bin/magento setup:upgrade
 
