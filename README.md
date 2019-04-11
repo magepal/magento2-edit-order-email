@@ -6,6 +6,11 @@
 
 Entering the wrong email address during purchase is a very common mistake, especially on order by phone transactions. Reduce the number of hours and frustration each time a custom mistype their email. With our extension the is no need to cancel and reorder just to correct a simple email in an email address.
 
+## Features
+- Edit order email address.
+- Update order customer email address (optional).
+- Add order email change history to order comment along with the admin user who changes the email address.
+
 
 ## Installation
 
