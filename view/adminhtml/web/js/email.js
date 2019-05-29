@@ -53,7 +53,6 @@ define([
                                 if (data.email) {
                                     $emailHref.attr("href", "mailto:" + data.email).text(data.email)
                                 }
-
                             }
 
                             if (data.ajaxExpired) {
@@ -68,7 +67,6 @@ define([
                         return false;
                     }
                 });
-
             } catch (e) {
                 $(".mage-error").html(e.message);
             }
