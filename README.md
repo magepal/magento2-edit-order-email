@@ -16,21 +16,21 @@ Entering the wrong email address during purchase is a very common mistake, espec
 - Update order customer email address (optional).
 - Add order email change history to order comment along with the admin user who changes the email address.
 
+## Documentation
+
+ - [How to Install Edit Order Email for Magento](https://www.magepal.com/help/docs/edit-order-email-magento2/#installation)
+
+ - [How to setup Edit Order Email for Magento 2](https://www.magepal.com/help/docs/edit-order-email-magento2/#configuration)
+ 
 
 ## Installation
-
-#### Step 1
 
 ##### Using Composer
 ```
 composer require magepal/magento2-edit-order-email
 ```
 
-## Documentation
 
- - [How to Install Edit Order Email for Magento](https://www.magepal.com/help/docs/edit-order-email-magento2/#installation)
-
- - [How to setup Edit Order Email for Magento 2](https://www.magepal.com/help/docs/edit-order-email-magento2/#configuration)
 
 
 
