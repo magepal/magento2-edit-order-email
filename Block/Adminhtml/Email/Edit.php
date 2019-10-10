@@ -89,7 +89,7 @@ class Edit extends Template
      */
     public function getAutocheckEmail()
     {
-        return $this->_helper->getConfigValue('magepal_editorderemail/general/update_customer_email');
+        return $this->_helper->isSetFlag('general/update_customer_email') ? 1 : 0;
     }
 
     /**

@@ -51,7 +51,8 @@ define([
                                 },10000);
 
                                 if (data.email) {
-                                    $emailHref.attr("href", "mailto:" + data.email).text(data.email)
+                                    $emailHref.attr("href", "mailto:" + data.email).text(data.email);
+                                    $('#mp_edit_order_email input[name="old_email"]').val(data.email);
                                 }
                             }
 
@@ -101,7 +102,5 @@ define([
         $form.submit(function (event) {
             return false;
         });
-
     }
-
 });

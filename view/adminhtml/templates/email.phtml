@@ -6,7 +6,6 @@
  */
 
 /** @var $block MagePal\EditOrderEmail\Block\Adminhtml\Email\Edit */
-$checked = $block->getAutocheckEmail() == 1 ? 'checked' : '';
 ?>
 <div id="mp_edit_order_email" style="display: none">
     <form class="form change-order-email"
@@ -25,7 +24,7 @@ $checked = $block->getAutocheckEmail() == 1 ? 'checked' : '';
 
             <?php if ($block->hasCustomerId()) : ?>
             <div class="checkbox">
-                <input type="checkbox" class="checkbox" id="update_customer_email" name="update_customer_email" value="<?= $block->getAutocheckEmail() ?>" <?= $checked ?>>
+                <input type="checkbox" class="checkbox" id="update_customer_email" name="update_customer_email" value="1" <?= $block->getAutocheckEmail() == 1 ? 'checked' : '' ?>>
                 <label for="update_customer_email"><?php echo __('Update Customer Record') ?></label>
             </div>
             <?php endif; ?>

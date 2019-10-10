@@ -15,12 +15,12 @@ class Data extends AbstractHelper
      * Retrieve the config value.
      *
      * @param string $configPath
-     * @return mixed
+     * @return bool
      */
-    public function getConfigValue($configPath)
+    public function isSetFlag($configPath)
     {
         return $this->scopeConfig->isSetFlag(
-            $configPath,
+            'magepal_editorderemail/' . $configPath,
             ScopeInterface::SCOPE_STORE
         );
     }
