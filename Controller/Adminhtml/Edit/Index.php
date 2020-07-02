@@ -22,6 +22,8 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 
 class Index extends Action
 {
+
+    const ADMIN_RESOURCE = 'MagePal_EditOrderEmail::magepal_editorderemail';
     /**
      * @var OrderRepositoryInterface
      */
@@ -169,15 +171,5 @@ class Index extends Action
                 ]
             );
         }
-    }
-
-    /**
-     * Is the user allowed to view the blog post grid.
-     *
-     * @return bool
-     */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('MagePal_EditOrderEmail::magepal_editorderemail');
     }
 }
