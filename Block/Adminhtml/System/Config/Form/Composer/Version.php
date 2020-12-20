@@ -14,14 +14,8 @@ use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Phrase;
 
-/**
- * Class Version
- * @package MagePal\EditOrderEmail\Block\Adminhtml\System\Config\Form\Composer
- */
 class Version extends Field
 {
 
@@ -63,9 +57,8 @@ class Version extends Field
     /**
      * Render button
      *
-     * @param  AbstractElement $element
+     * @param AbstractElement $element
      * @return string
-     * @throws LocalizedException
      */
     public function render(AbstractElement $element)
     {
@@ -97,20 +90,10 @@ class Version extends Field
     }
 
     /**
-     * @return string
-     */
-    public function getModuleName()
-    {
-        $classArray = explode('\\', get_class($this));
-
-        return count($classArray) > 2 ? "{$classArray[0]}_{$classArray[1]}" : '';
-    }
-
-    /**
      * Get module composer version
      *
      * @param $moduleName
-     * @return Phrase|string|void
+     * @return string
      */
     public function getComposerVersion($moduleName)
     {
@@ -128,7 +111,7 @@ class Version extends Field
                 return !empty($data->version) ? $data->version : __('Unknown');
             }
         } catch (Exception $e) {
-            //
+            return 'Unknown';
         }
 
         return 'Unknown';
