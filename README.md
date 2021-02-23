@@ -7,9 +7,12 @@
 [![GitHub stars](https://img.shields.io/github/stars/magepal/magento2-edit-order-email.svg)](https://www.magepal.com/help/docs/edit-order-email-magento2/)
 [![GitHub forks](https://img.shields.io/github/forks/magepal/magento2-edit-order-email.svg)](https://www.magepal.com/help/docs/edit-order-email-magento2/)
 
-![Magento2 - Edit Order Email](https://user-images.githubusercontent.com/1415141/55928085-63b5ad80-5be5-11e9-9f61-df45b1d7a7e9.gif)
+<a href="https://www.magepal.com/magento2/extensions/admin-order-enhancements.html" ><img alt="Magento2 - Edit Order Email" src="https://user-images.githubusercontent.com/1415141/108897085-b8008580-75e3-11eb-953a-6c8b87ff12aa.png" /></a>
+
 
 Entering the wrong email address during purchase is a very common mistake, especially on order by phone transactions. Reduce the number of hours and frustration each time a customer mistype their email. With our extension the is no need to cancel and reorder just to correct a simple email in an email address.
+
+<a href="https://www.magepal.com/magento2/extensions/admin-order-enhancements.html" ><img alt="Magento2 - Edit Order Email" src="https://user-images.githubusercontent.com/1415141/55928085-63b5ad80-5be5-11e9-9f61-df45b1d7a7e9.gif" /></a>
 
 ## Features
 - Edit order email address.
