@@ -2,12 +2,12 @@
 
 ## Magento2 - Edit Order Email Address
 
-[![Total Downloads](https://poser.pugx.org/magepal/magento2-edit-order-email/downloads)](https://www.magepal.com/help/docs/edit-order-email-magento2/)
-[![Latest Stable Version](https://poser.pugx.org/magepal/magento2-edit-order-email/v/stable)](https://www.magepal.com/help/docs/edit-order-email-magento2/)
-[![GitHub stars](https://img.shields.io/github/stars/magepal/magento2-edit-order-email.svg)](https://www.magepal.com/help/docs/edit-order-email-magento2/)
-[![GitHub forks](https://img.shields.io/github/forks/magepal/magento2-edit-order-email.svg)](https://www.magepal.com/help/docs/edit-order-email-magento2/)
+[![Total Downloads](https://poser.pugx.org/magepal/magento2-edit-order-email/downloads)](https://www.magepal.com/magento2/extensions/edit-order-email-address-for-magento-2.html)
+[![Latest Stable Version](https://poser.pugx.org/magepal/magento2-edit-order-email/v/stable)](https://www.magepal.com/magento2/extensions/edit-order-email-address-for-magento-2.html)
+[![GitHub stars](https://img.shields.io/github/stars/magepal/magento2-edit-order-email.svg)](https://www.magepal.com/magento2/extensions/edit-order-email-address-for-magento-2.html)
+[![GitHub forks](https://img.shields.io/github/forks/magepal/magento2-edit-order-email.svg)](https://www.magepal.com/magento2/extensions/edit-order-email-address-for-magento-2.html)
 
-<a href="https://www.magepal.com/magento2/extensions/admin-order-enhancements.html" ><img alt="Magento2 - Edit Order Email" src="https://user-images.githubusercontent.com/1415141/108897085-b8008580-75e3-11eb-953a-6c8b87ff12aa.png" /></a>
+<a href="https://www.magepal.com/magento2/extensions/edit-order-email-address-for-magento-2.html" ><img alt="Magento2 - Edit Order Email" src="https://user-images.githubusercontent.com/1415141/108897085-b8008580-75e3-11eb-953a-6c8b87ff12aa.png" /></a>
 
 
 Entering the wrong email address during purchase is a very common mistake, especially on order by phone transactions. Reduce the number of hours and frustration each time a customer mistype their email. With our extension the is no need to cancel and reorder just to correct a simple email in an email address.
