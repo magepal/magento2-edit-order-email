@@ -139,6 +139,11 @@ class Index extends Action
                 $order->addStatusHistoryComment($comment);
                 $order->setCustomerEmail($emailAddress);
                 $this->orderRepository->save($order);
+                
+                foreach ($order->getAddressesCollection() as $address)
+                {
+                    $address->setEmail($emailAddress)->save();
+                }
             }
 
             //if update customer email
