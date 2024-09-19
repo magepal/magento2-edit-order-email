@@ -2,7 +2,7 @@
 /**
  * Copyright © MagePal LLC. All rights reserved.
  * See COPYING.txt for license details.
- * http://www.magepal.com | support@magepal.com
+ * https://www.magepal.com | support@magepal.com
 */
 
 namespace MagePal\EditOrderEmail\Controller\Adminhtml\Edit;
@@ -139,7 +139,7 @@ class Index extends Action
                 $order->addStatusHistoryComment($comment);
                 $order->setCustomerEmail($emailAddress);
                 $this->orderRepository->save($order);
-                
+
                 foreach ($order->getAddressesCollection() as $address)
                 {
                     $address->setEmail($emailAddress)->save();
