@@ -45,10 +45,7 @@
 <script type="text/x-magento-init">
     {
         "*": {
-            "magePalEditOrderEmail": {
-                "postUrl":"<?php echo $block->getAdminPostUrl() ?>",
-                "buttonLabel":"<?php echo __('edit') ?>"
-            }
+            "magePalEditOrderEmail": <?= /* @noEscape */ $block->getInitConfigJson() ?>
         }
     }
 </script>
