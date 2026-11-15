@@ -72,6 +72,20 @@ class Edit extends Template
     }
 
     /**
+     * @return string
+     */
+    public function getInitConfigJson()
+    {
+        return json_encode(
+            [
+                'postUrl' => $this->getAdminPostUrl(),
+                'buttonLabel' => (string)__('edit')
+            ],
+            JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES
+        );
+    }
+
+    /**
      * @return int
      */
     public function getOrderId()
